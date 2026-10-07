@@ -6,7 +6,9 @@
 
 | 資料夾 / 檔案路徑 | 檔案大小 | 檔案內容與用途說明 | 給組員的交接建議 |
 | :--- | :--- | :--- | :--- |
-| **`All_Beauty/reviews_All_Beauty.json`** | 254K | **【核心訓練檔】** 清洗後的 Amazon 美妝互動紀錄（共 2,627 筆、262 人）。已完成 5-core 過濾、去重、毫秒轉秒（`unixReviewTime`），並對齊官方欄位格式。 | **★ 必下載**<br>放進官方專案的 `tests/resources/deeprec/sequential/amazon/` |
+| **`All_Beauty/reviews_All_Beauty.json`** | 254K | **【核心訓練檔】** 清洗後的 Amazon 美妝互動紀錄（共 2,627 筆、262 人）。已完成 5-core 過濾、去重、保留原始毫秒時間戳，不人為調整同時間紀錄。
+unixReviewTime 單位為毫秒，官方 SURGE 的 prepare_hparams 需設定 time_unit="ms"
+，並對齊官方欄位格式。 | **★ 必下載**<br>放進官方專案的 `tests/resources/deeprec/sequential/amazon/` |
 | **`All_Beauty/meta_All_Beauty.json`** | 20K | **【核心對照檔】** 自動生成的商品類別對照表（共 368 件商品），用來滿足官方 `_meta_preprocessing` 強制讀取 `asin` 與 `categories` 的規定。 | **★ 必下載**<br>與上方 `reviews` 檔放在同一個 `amazon/` 資料夾內 |
 | **`All_Beauty/amazon_beauty_surge.txt`** | 13K | **【純數字序列檔】** 由 `clean_amazon.py` 產出的空白分隔序列檔（如 `1 7 6 5 4`）。 | **備用檔**<br>官方 TF 1.x 版用不到；若改用 PyTorch / RecBole 可直接餵入 |
 | **`convert_for_surge.py`** | 2.1K | **【全自動分類轉換腳本】** 讀取原始 `.jsonl` 並執行去重與 5-core 過濾，自動建立類別資料夾並產出 `reviews_*.json` 與 `meta_*.json`。 | **供團隊重用**<br>用法：`python3 convert_for_surge.py <類別名稱>` |

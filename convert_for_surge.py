@@ -37,11 +37,11 @@ with open(input_file, 'r', encoding='utf-8') as f:
             i = data.get('parent_asin') or data.get('asin')
             t = data.get('timestamp')
             if u and i and t:
-                t_sec = int(t) // 1000  # 毫秒轉秒
-                key = (u, i, t_sec)
+                t_ms = int(t)
+                key = (u, i, t_ms)
                 if key not in seen:
                     seen.add(key)
-                    raw_records.append((u, i, t_sec))
+                    raw_records.append((u, i, t_ms))
         except Exception:
             continue
 
@@ -64,16 +64,9 @@ while True:
     raw_records = filtered
 
 # 針對同一使用者在同一秒買多個商品的微調（避免 SURGE 排序衝突）
+# 保留真實毫秒時間，不人為增加時間
 raw_records.sort(key=lambda x: (x[0], x[2]))
-final_records = []
-last_u = None
-last_t = -1
-for u, i, t in raw_records:
-    if u == last_u and t <= last_t:
-        t = last_t + 1
-    final_records.append((u, i, t))
-    last_u = u
-    last_t = t
+final_records = raw_records
 
 unique_users = set(x[0] for x in final_records)
 unique_items = sorted(list(set(x[1] for x in final_records)))
